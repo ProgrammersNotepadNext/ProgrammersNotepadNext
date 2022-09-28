@@ -1,7 +1,7 @@
 #include "gui/tab.h"
 #include "gui/tabwidget.h"
 
-Tab::Tab(tab_widget* parent)
+Tab::Tab(TabWidget* parent)
     : QWidget(parent)
     , tabwidget_(parent)
 {

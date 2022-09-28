@@ -1,11 +1,15 @@
 #pragma once
 
+#pragma warning(push)
+#pragma warning(disable:4127)
 #include <QAbstractScrollArea>
 #include <QPen>
 #include <QBrush>
 
 #include "chunks.h"
 #include "commands.h"
+
+#pragma warning(pop)
 
 /** \mainpage
 QHexEdit is a binary editor widget for Qt.

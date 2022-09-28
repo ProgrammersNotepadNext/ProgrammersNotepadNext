@@ -4,7 +4,7 @@
 #include "gui/texteditor.h"
 #include <QToolButton>
 
-tab_widget::tab_widget(QWidget* parent)
+TabWidget::TabWidget(QWidget* parent)
     : QTabWidget(parent)
 {
     setTabBar(new TabBar(this));
@@ -16,20 +16,20 @@ tab_widget::tab_widget(QWidget* parent)
     setup_connections();
 }
 
-tab_widget::~tab_widget() = default;
+TabWidget::~TabWidget() = default;
 
-void tab_widget::setup_connections()
+void TabWidget::setup_connections()
 {
-    connect(tab_bar(), &TabBar::tabCloseRequested, this, &tab_widget::closeTab);
-    connect(tab_bar(), &TabBar::customContextMenuRequested, this, &tab_widget::showTabContextMenu);
+    connect(tab_bar(), &TabBar::tabCloseRequested, this, &TabWidget::closeTab);
+    connect(tab_bar(), &TabBar::customContextMenuRequested, this, &TabWidget::showTabContextMenu);
 }
 
-bool tab_widget::closeTab(int index)
+bool TabWidget::closeTab(int index)
 {
-    return remove_tab(index, true);
+    return removeTab(index, true);
 }
 
-void tab_widget::closeAllTabsExceptCurrent()
+void TabWidget::closeAllTabsExceptCurrent()
 {
     // Close tabs after active tab.
     int index_of_active = currentIndex();
@@ -48,7 +48,7 @@ void tab_widget::closeAllTabsExceptCurrent()
     }
 }
 
-void tab_widget::closeAllTabs()
+void TabWidget::closeAllTabs()
 {
     for (int i = count() - 1; i >= 0; i--)
     {
@@ -56,7 +56,7 @@ void tab_widget::closeAllTabs()
     }
 }
 
-void tab_widget::closeCurrentTab()
+void TabWidget::closeCurrentTab()
 {
     if (currentIndex() >= 0)
     {
@@ -64,7 +64,7 @@ void tab_widget::closeCurrentTab()
     }
 }
 
-void tab_widget::gotoNextTab()
+void TabWidget::gotoNextTab()
 {
     if (currentIndex() == count() - 1)
     {
@@ -76,7 +76,7 @@ void tab_widget::gotoNextTab()
     }
 }
 
-void tab_widget::gotoPreviousTab()
+void TabWidget::gotoPreviousTab()
 {
     if (currentIndex() == 0)
     {
@@ -88,7 +88,7 @@ void tab_widget::gotoPreviousTab()
     }
 }
 
-void tab_widget::indentTabText(int index)
+void TabWidget::indentTabText(int index)
 {
 #if defined(Q_OS_MACOS)
     if (!tabIcon(index).isNull())
@@ -106,7 +106,7 @@ void tab_widget::indentTabText(int index)
 #endif
 }
 
-bool tab_widget::remove_tab(int index, bool clear_from_memory)
+bool TabWidget::removeTab(int index, bool clear_from_memory)
 {
     auto widg = widget(index);
     bool closed = widg != nullptr && widg->close();
@@ -124,7 +124,7 @@ bool tab_widget::remove_tab(int index, bool clear_from_memory)
     return closed;
 }
 
-void tab_widget::showTabContextMenu(const QPoint& point)
+void TabWidget::showTabContextMenu(const QPoint& point)
 {
     const auto current_tab_index = tab_bar()->tabAt(point);
     if (current_tab_index < 0)
@@ -155,7 +155,7 @@ void tab_widget::showTabContextMenu(const QPoint& point)
     menu->exec(tab_bar()->mapToGlobal(point));
 }
 
-void tab_widget::makeTabVisible(Tab* tab)
+void TabWidget::makeTabVisible(Tab* tab)
 {
     if (tab != nullptr)
     {
@@ -163,7 +163,7 @@ void tab_widget::makeTabVisible(Tab* tab)
     }
 }
 
-void tab_widget::makeEditorVisible(hexeditor* editor)
+void TabWidget::makeEditorVisible(Editor* editor)
 {
     if (editor != nullptr)
     {
@@ -171,7 +171,7 @@ void tab_widget::makeEditorVisible(hexeditor* editor)
     }
 }
 
-bool tab_widget::has_only_one_empty_editor() const
+bool TabWidget::has_only_one_empty_editor() const
 {
     // auto editor = textEditorAt(0);
     // editor->data().isEmpty()
@@ -180,17 +180,17 @@ bool tab_widget::has_only_one_empty_editor() const
                          // textEditorAt(0)->length() == 0 && textEditorAt(0)->filePath().isEmpty();
 }
 
-hexeditor* tab_widget::current_editor() const
+Editor* TabWidget::current_editor() const
 {
     return editor_at(currentIndex());
 }
 
-Tab* tab_widget::current_tab() const
+Tab* TabWidget::current_tab() const
 {
     return tab_at(currentIndex());
 }
 
-int tab_widget::index_of_editor(hexeditor* editor) const
+int TabWidget::index_of_editor(Editor* editor) const
 {
     int i = 0;
 
@@ -204,7 +204,7 @@ int tab_widget::index_of_editor(hexeditor* editor) const
     return -1;
 }
 
-hexeditor* tab_widget::editor_at(int index) const
+Editor* TabWidget::editor_at(int index) const
 {
     const auto tab = tab_at(index);
     if (tab == nullptr)
@@ -212,7 +212,7 @@ hexeditor* tab_widget::editor_at(int index) const
     return tab->primaryEditor();
 }
 
-Tab* tab_widget::tab_at(int index) const
+Tab* TabWidget::tab_at(int index) const
 {
     if (index < 0 || index >= count())
         return nullptr;
@@ -220,9 +220,9 @@ Tab* tab_widget::tab_at(int index) const
     return qobject_cast<Tab*>(widget(index));
 }
 
-QList<hexeditor*> tab_widget::editors() const
+QList<Editor*> TabWidget::editors() const
 {
-    auto editors = QList<hexeditor*>();
+    auto editors = QList<Editor*>();
 
     for (int i = 0; i < count(); i++)
     {
@@ -235,7 +235,7 @@ QList<hexeditor*> tab_widget::editors() const
     return editors;
 }
 
-QList<Tab*> tab_widget::tabs() const
+QList<Tab*> TabWidget::tabs() const
 {
     auto tabs = QList<Tab*>();
 
@@ -250,7 +250,7 @@ QList<Tab*> tab_widget::tabs() const
     return tabs;
 }
 
-Tab* tab_widget::tab_with_file(const QString& /*file_path*/) const
+Tab* TabWidget::tab_with_file(const QString& /*file_path*/) const
 {
 #if 0
 for (int i = 0; i < count(); i++) {
@@ -267,28 +267,19 @@ for (int i = 0; i < count(); i++) {
     return nullptr;
 }
 
-void tab_widget::onTabRequestedVisibility()
+void TabWidget::onTabRequestedVisibility()
 {
     makeTabVisible(qobject_cast<Tab*>(sender()));
 }
 
-void tab_widget::prepareNewTab(int index)
+void TabWidget::prepareNewTab(int index)
 {
     tab_bar()->setupTabControls(index);
     indentTabText(index);
-    connect(tab_at(index), &Tab::visibilityRequested, this, &tab_widget::onTabRequestedVisibility);
+    connect(tab_at(index), &Tab::visibilityRequested, this, &TabWidget::onTabRequestedVisibility);
 }
 
-int tab_widget::add_tab(Tab* widget, const QIcon& icon, const QString& label)
-{
-    const int index = QTabWidget::addTab(widget, icon, label);
-
-    prepareNewTab(index);
-
-    return index;
-}
-
-int tab_widget::add_tab(Tab* widget, const QString& label)
+int TabWidget::addTab(Tab* widget, const QString& label)
 {
     const int index = QTabWidget::addTab(widget, label);
 
@@ -297,16 +288,7 @@ int tab_widget::add_tab(Tab* widget, const QString& label)
     return index;
 }
 
-int tab_widget::insert_tab(int index, Tab* widget, const QIcon& icon, const QString& label)
-{
-    const int tab_index = QTabWidget::insertTab(index, widget, icon, label);
-
-    prepareNewTab(index);
-
-    return tab_index;
-}
-
-int tab_widget::insert_tab(int index, Tab* widget, const QString& label)
+int TabWidget::insertTab(int index, Tab* widget, const QString& label)
 {
     const int tab_index = QTabWidget::insertTab(index, widget, label);
 
@@ -315,15 +297,20 @@ int tab_widget::insert_tab(int index, Tab* widget, const QString& label)
     return tab_index;
 }
 
-void tab_widget::change_icon(int index, const QIcon& new_icon)
-{
-    setTabIcon(index, new_icon);
-    indentTabText(index);
-}
+//void tab_widget::change_icon(int index, const QIcon& new_icon)
+//{
+//    setTabIcon(index, new_icon);
+//    indentTabText(index);
+//}
 
-void tab_widget::change_title(int index, const QString& new_title, const QString& tool_tip)
+void TabWidget::change_title(int index, const QString& new_title, const QString& tool_tip)
 {
     setTabText(index, new_title);
     setTabToolTip(index, tool_tip);
     indentTabText(index);
+}
+
+TabBar* TabWidget::tab_bar() const
+{
+    return static_cast<TabBar*>(QTabWidget::tabBar());
 }

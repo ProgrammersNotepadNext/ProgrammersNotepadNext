@@ -1,10 +1,22 @@
 #pragma once
 
 #include <qhexedit/qhexedit.h>
-#include <filesystem>
+
+
+// an editor lives inside an EditorTab, we have have different kinds of editors. Text editors but also hex editors.
+class Editor
+{
+public:
+    virtual ~Editor() = default;
+    virtual void Save() = 0;
+    virtual void SaveAs() = 0;
+    //virtual void Close() = 0;
+    virtual auto Filepath() const -> QString = 0;
+    virtual auto Filename() const -> QString = 0;
+};
 
 // glue object to handle file handler and the hexeditor
-class hexeditor : public QHexEdit
+class hexeditor : public Editor, public QHexEdit
 {
     Q_OBJECT
 public:
@@ -13,11 +25,11 @@ public:
     // load file
     hexeditor(QString filename, QWidget* parent = nullptr);
 
-    bool save();
-    bool save_as();
+    void Save() override;
+    void SaveAs() override;
 
-    auto filepath() const -> QString;
-    auto filename() const -> QString;
+    auto Filepath() const -> QString override;
+    auto Filename() const -> QString override;
 
 private:
     bool savefile(const QString& fileName);

@@ -20,7 +20,9 @@ class MainWindow : public QMainWindow
 public:
     MainWindow();
 
-    tab_widget* tabWidget() const;
+    TabWidget* tabWidget() const;
+
+    void openFile(const QString& fileName);
 
 protected:
     void closeEvent(QCloseEvent* event) override;
@@ -33,8 +35,8 @@ private slots:
     void open();
     void optionsAccepted();
     void findNext();
-    bool save();
-    bool saveAs();
+    void save();
+    void saveAs();
     void setAddress(qint64 address);
     void setOverwriteMode(bool mode);
     void setSize(qint64 size);
@@ -48,13 +50,13 @@ private:
     void createStatusBar();
     void createToolBars();
     int addTextEditor(hexeditor* editor);
-    void loadFile(const QString& fileName);
+    
     void readSettings();
     //bool saveFile(const QString &fileName);
     void setCurrentFile(const QString& fileName);
     void writeSettings();
 
-    tab_widget* tabWidget_{nullptr};
+    TabWidget* tabWidget_{nullptr};
 
     QMenu* fileMenu_{nullptr};
     QMenu* editMenu_{nullptr};

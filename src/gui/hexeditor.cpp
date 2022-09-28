@@ -2,6 +2,7 @@
 #include <QFileDialog>
 #include <QApplication>
 #include <QMessageBox>
+#include <filesystem>
 
 hexeditor::hexeditor(QString filename, QWidget* parent /*= nullptr*/)
     : QHexEdit(parent)
@@ -20,29 +21,32 @@ hexeditor::hexeditor(QWidget* parent /*= nullptr*/)
 {
 }
 
-bool hexeditor::save()
+void hexeditor::Save()
 {
     if (is_untitled_)
-        return save_as();
+    {
+        SaveAs();
+        return;
+    }
 
-    return savefile(filename_);
+    savefile(filename_);
 }
 
-bool hexeditor::save_as()
+void hexeditor::SaveAs()
 {
     const auto fileName = QFileDialog::getSaveFileName(this, tr("Save As"), filename_);
     if (fileName.isEmpty())
-        return false;
+        return;
 
-    return savefile(fileName);
+    savefile(fileName);
 }
 
-auto hexeditor::filepath() const -> QString
+auto hexeditor::Filepath() const -> QString
 {
     return filename_;
 }
 
-QString hexeditor::filename() const
+QString hexeditor::Filename() const
 {
     const auto file_name = std::filesystem::path(filename_.toStdString()).filename();
     return QString::fromStdString(file_name.string());

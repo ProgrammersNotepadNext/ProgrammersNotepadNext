@@ -1,20 +1,19 @@
 #include "gui/editortab.h"
-
 #include "gui/tabwidget.h"
 #include "mainwindow.h"
 
 #include <QCloseEvent>
 #include <QLayout>
 
-EditorTab::EditorTab(MainWindow* text_app, hexeditor* editor)
+EditorTab::EditorTab(MainWindow* text_app, Editor* editor)
     : Tab(text_app->tabWidget())
     , m_editor(editor)
 {
     auto* lay = new QVBoxLayout(this);
 
-    lay->setMargin(0);
+    lay->setContentsMargins(0, 0, 0, 0);
     lay->setSpacing(0);
-    lay->addWidget(editor, 1);
+    lay->addWidget(dynamic_cast<QWidget*>(editor), 1);
 
     updateTitleFromEditor();
     // m_editor->setReadOnly()
@@ -52,19 +51,19 @@ QMenu* EditorTab::contextMenu() const
 
     const auto save_text = tr("Save") + " " + m_title;
     menu->addAction(
-        save_text, [this]() { m_editor->save(); }, QKeySequence("Ctrl+S"));
+        save_text, [this]() { m_editor->Save(); }, QKeySequence("Ctrl+S"));
 
     return menu;
 }
 
-hexeditor* EditorTab::primaryEditor() const
+Editor* EditorTab::primaryEditor() const
 {
     return m_editor;
 }
 
-QList<hexeditor*> EditorTab::allEditors() const
+QList<Editor*> EditorTab::allEditors() const
 {
-    return QList<hexeditor*>() << primaryEditor();
+    return QList<Editor*>() << primaryEditor();
 }
 
 int EditorTab::countOfEditors() const
@@ -88,31 +87,19 @@ void EditorTab::closeEvent(QCloseEvent* /*event*/)
     //}
 }
 
-void EditorTab::updateIcon(bool /*read_only*/)
-{
-    // if (read_only) {
-    //    m_icon = qApp->icons()->fromTheme(QSL("lock"));
-    //}
-    // else {
-    //    m_icon = m_editor->modify() ?
-    //        qApp->icons()->fromTheme(QSL("gtk-dialog-warning")) :
-    //        QIcon();
-    //}
-}
-
 void EditorTab::updateTitleFromEditor()
 {
     if (m_editor == nullptr)
         return;
 
-    const auto filepath = m_editor->filepath();
+    const auto filepath = m_editor->Filepath();
     if (filepath.isEmpty())
     {
         m_title = tr("New file");
     }
     else
     {
-        m_title = m_editor->filename();
+        m_title = m_editor->Filename();
     }
 }
 
@@ -124,9 +111,4 @@ QString EditorTab::title() const
 QString EditorTab::toolTip() const
 {
     return m_toolTip;
-}
-
-QIcon EditorTab::icon() const
-{
-    return m_icon;
 }

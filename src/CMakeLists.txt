@@ -1,16 +1,12 @@
-cmake_minimum_required (VERSION 3.13)
-
-project(Hexactly)
-
-# project part
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-# For now we just make it easy for ourselfs
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOMOC ON)
 #set(CMAKE_AUTOUIC ON)
 
 set(SOURCES
+    application.cpp
+    application.h
     main.cpp
     mainwindow.cpp
     mainwindow.h
@@ -35,15 +31,13 @@ set(SOURCES_GUI
     gui/tabwidget.h
     gui/hexeditor.cpp
     gui/hexeditor.h
-    gui/glyph_button.cpp
-    gui/glyph_button.h
 )
 
 source_group(src\\gui FILES
     ${SOURCES_GUI}
 )
 
-qt5_wrap_ui(QT_SOURCES_UI
+qt_wrap_ui(QT_SOURCES_UI
     optionsdialog.ui
     searchdialog.ui
 )
@@ -53,38 +47,40 @@ source_group(src\\gui\\generated FILES
 )
 
 set(RESOURCES
-    hexactly.qrc
+    programmersnotepadnext.qrc
 )
 
-qt5_add_resources(QT_RESOURCES
+qt_add_resources(QT_RESOURCES
     ${RESOURCES}
 )
 
-add_executable(Hexactly
+add_executable(ProgrammersNotepadNext
     ${SOURCES}
     ${SOURCES_GUI}
     ${QT_RESOURCES}
     ${QT_SOURCES_UI}
 )
 
-target_include_directories(Hexactly
+target_include_directories(ProgrammersNotepadNext
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_link_libraries(Hexactly
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
+target_link_libraries(ProgrammersNotepadNext
+    Qt::Core
+    Qt::Gui
+    Qt::Widgets
     HexEditQt
 )
 
-target_compile_definitions(Hexactly
+target_compile_definitions(ProgrammersNotepadNext
   PRIVATE
     NOMINMAX
+    # for now we must define this because qt6 isn't c++23 compliant.
+    _SILENCE_ALL_CXX23_DEPRECATION_WARNINGS
 )
 
-set_target_properties(Hexactly PROPERTIES
+set_target_properties(ProgrammersNotepadNext PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$(Configuration)
 )

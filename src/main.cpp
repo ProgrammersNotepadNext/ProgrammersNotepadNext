@@ -1,22 +1,23 @@
-#include <QApplication>
-#include <QFontDatabase>
-#include <QIcon>
-
-#include "mainwindow.h"
+#include "application.h"
+#include <QCommandLineParser>
 
 int main(int argc, char* argv[])
 {
-    Q_INIT_RESOURCE(hexactly);
+    QCoreApplication::setApplicationName("Programmers Notepad Next");
+    QCoreApplication::setOrganizationName("Programmers Notepad Next");
+    QCoreApplication::setApplicationVersion("0.1");
 
-    QApplication app(argc, argv);
-    app.setApplicationName("Hexactly");
-    app.setOrganizationName("Hexactly");
-    app.setWindowIcon(QIcon(":images/hexactly.ico"));
+    Application app(argc, argv);
 
-    QFontDatabase::addApplicationFont(":/images/codicon.ttf");
+    QCommandLineParser parser;
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addPositionalArgument(QObject::tr("file"), QObject::tr("The file to open."));
+    parser.process(app);
 
-    auto* main_window = new MainWindow;
-    main_window->show();
+    auto window = Application::newWindow();
+    if (auto positionalArguments = parser.positionalArguments(); !positionalArguments.isEmpty())
+        Application::openFile(window, positionalArguments.constFirst());
 
-    return app.exec();
+    return Application::exec();
 }

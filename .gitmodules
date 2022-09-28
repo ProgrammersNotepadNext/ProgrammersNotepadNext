@@ -1,0 +1,6 @@
+[submodule "dep/scintilla-code"]
+	path = dep/scintilla-code
+	url = https://github.com/ProgrammersNotepadNext/scintilla-code.git
+[submodule "dep/lexilla"]
+	path = dep/lexilla
+	url = https://github.com/ProgrammersNotepadNext/lexilla.git

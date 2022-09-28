@@ -8,7 +8,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
 #list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # package manager part
-find_package(Qt5 5.14 REQUIRED COMPONENTS Core Gui Widgets designer)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets designer)
 
 # compiler part
 set(CMAKE_CXX_STANDARD 17)
@@ -77,13 +77,11 @@ target_compile_definitions(HexEditQt
 )
 
 target_link_libraries(HexEditQt
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
-    Qt5::Designer
+    Qt::Core
+    Qt::Gui
+    Qt::Widgets
+    Qt::Designer
 )
-
-
 
 # todo
 # restore example

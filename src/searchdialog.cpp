@@ -39,7 +39,7 @@ void SearchDialog::on_pbFind_clicked()
 
 void SearchDialog::on_pbReplace_clicked()
 {
-    int idx = findNext();
+    auto idx = findNext();
     if (idx >= 0)
     {
         const auto replaceBa = getContent(ui->cbReplaceFormat->currentIndex(), ui->cbReplace->currentText());
@@ -49,9 +49,9 @@ void SearchDialog::on_pbReplace_clicked()
 
 void SearchDialog::on_pbReplaceAll_clicked()
 {
-    int replaceCounter = 0;
-    int idx = 0;
-    int goOn = QMessageBox::Yes;
+    qint64 replaceCounter = 0;
+    qint64 idx = 0;
+    qint64 goOn = QMessageBox::Yes;
 
     while ((idx >= 0) && (goOn == QMessageBox::Yes))
     {
@@ -59,7 +59,7 @@ void SearchDialog::on_pbReplaceAll_clicked()
         if (idx >= 0)
         {
             QByteArray replaceBa = getContent(ui->cbReplaceFormat->currentIndex(), ui->cbReplace->currentText());
-            int result = replaceOccurrence(idx, replaceBa);
+            auto result = replaceOccurrence(idx, replaceBa);
 
             if (result == QMessageBox::Yes)
                 replaceCounter += 1;

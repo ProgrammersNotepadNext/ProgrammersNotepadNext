@@ -1,3 +1,6 @@
+#include "mainwindow.h"
+#include "gui/editortab.h"
+
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QApplication>
@@ -11,16 +14,13 @@
 #include <QDragEnterEvent>
 #include <QDropEvent>
 
-#include "mainwindow.h"
-#include "gui/editortab.h"
-
 MainWindow::MainWindow()
 {
     setAcceptDrops(true);
     init();
 }
 
-tab_widget* MainWindow::tabWidget() const
+TabWidget* MainWindow::tabWidget() const
 {
     return tabWidget_;
 }
@@ -42,7 +42,7 @@ void MainWindow::dropEvent(QDropEvent* event)
     {
         QList<QUrl> urls = event->mimeData()->urls();
         QString filePath = urls.at(0).toLocalFile();
-        loadFile(filePath);
+        openFile(filePath);
         event->accept();
     }
 }
@@ -60,7 +60,7 @@ void MainWindow::open()
 {
     QString fileName = QFileDialog::getOpenFileName(this);
     if (!fileName.isEmpty())
-        loadFile(fileName);
+        openFile(fileName);
 }
 
 void MainWindow::optionsAccepted()
@@ -74,14 +74,14 @@ void MainWindow::findNext()
     searchDialog_->findNext();
 }
 
-bool MainWindow::save()
+void MainWindow::save()
 {
-    return tabWidget_->current_editor()->save();
+    tabWidget_->current_editor()->Save();
 }
 
-bool MainWindow::saveAs()
+void MainWindow::saveAs()
 {
-    return tabWidget_->current_editor()->save_as();
+    tabWidget_->current_editor()->SaveAs();
 }
 
 void MainWindow::setAddress(qint64 address)
@@ -121,7 +121,7 @@ void MainWindow::init()
     optionsDialog_ = new OptionsDialog(this);
     connect(optionsDialog_, SIGNAL(accepted()), this, SLOT(optionsAccepted()));
 
-    tabWidget_ = new tab_widget(this);
+    tabWidget_ = new TabWidget(this);
     setCentralWidget(tabWidget_);
 
     // hexEdit_ = new QHexEdit;
@@ -277,13 +277,10 @@ int MainWindow::addTextEditor(hexeditor* editor)
 {
     Tab* tab = new EditorTab(this, editor);
 
-    // connect(tab, &Tab::iconChanged, this, &TextApplication::onTabIconChanged);
-    // connect(tab, &Tab::titleChanged, this, &TextApplication::onTabTitleChanged);
-
-    return tabWidget_->add_tab(tab, QIcon(), tab->title());
+    return tabWidget_->addTab(tab, tab->title());
 }
 
-void MainWindow::loadFile(const QString& fileName)
+void MainWindow::openFile(const QString& fileName)
 {
     auto editor = new hexeditor(fileName, this);
 
